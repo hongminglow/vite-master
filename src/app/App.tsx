@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect, useRef } from "react";
 import {
   BrowserRouter,
   Link,
@@ -10,7 +10,7 @@ import {
 
 import { SideRail } from "@/components/navigation/SideRail";
 import { Panel } from "@/components/ui/Panel";
-import { contentTopics, getLabTopic, labTopics } from "@/data/topics";
+import { contentTopics, labTopics } from "@/data/topics";
 
 const routeModules = [
   {
@@ -61,7 +61,14 @@ export default function App() {
 
 function AppFrame() {
   const location = useLocation();
-  const activeTopic = getLabTopic(location.pathname);
+  const sidebarScrollRef = useRef<HTMLDivElement | null>(null);
+  const contentScrollRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+    sidebarScrollRef.current?.scrollTo({ top: 0, behavior: "auto" });
+    contentScrollRef.current?.scrollTo({ top: 0, behavior: "auto" });
+  }, [location.pathname, location.search]);
 
   return (
     <div className="lab-shell relative min-h-screen xl:h-screen xl:overflow-hidden">
@@ -86,9 +93,17 @@ function AppFrame() {
         </header>
 
         <div className="mt-4 grid gap-4 xl:min-h-0 xl:flex-1 xl:grid-cols-[320px_minmax(0,1fr)]">
-          <SideRail topics={labTopics} />
+          <div
+            className="xl:lab-scroll xl:min-h-0 xl:overflow-y-auto xl:pr-1"
+            ref={sidebarScrollRef}
+          >
+            <SideRail topics={labTopics} />
+          </div>
 
-          <div className="space-y-4 xl:lab-scroll xl:min-h-0 xl:overflow-y-auto xl:pr-1">
+          <div
+            className="space-y-4 xl:lab-scroll xl:min-h-0 xl:overflow-y-auto xl:pr-1"
+            ref={contentScrollRef}
+          >
             <Suspense fallback={<RouteFallback />}>
               <Routes>
                 {routeModules.map(({ path, Component }) => (

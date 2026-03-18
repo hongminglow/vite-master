@@ -12,7 +12,7 @@ type SideRailProps = {
 
 export function SideRail({ topics }: SideRailProps) {
   return (
-    <aside className="space-y-4 xl:lab-scroll xl:min-h-0 xl:overflow-y-auto xl:pr-1">
+    <aside className="space-y-4">
       <Panel className="p-5">
         <nav aria-label="Topic navigation" className="space-y-2">
           {topics.map((topic) => (
