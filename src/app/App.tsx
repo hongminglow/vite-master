@@ -1,43 +1,120 @@
+import { lazy, Suspense } from "react";
+import {
+  BrowserRouter,
+  Link,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router";
+
 import { SideRail } from "@/components/navigation/SideRail";
-import { labSections } from "@/data/site";
-import { RequestFormLab } from "@/features/forms-lab/RequestFormLab";
-import { HeroSection } from "@/features/hero/HeroSection";
-import { RenderPerformanceLab } from "@/features/render-lab/RenderPerformanceLab";
-import { ServerStateLab } from "@/features/server-state/ServerStateLab";
-import { ToolingLab } from "@/features/tooling-lab/ToolingLab";
-import { SvgLab } from "@/features/svg-lab/SvgLab";
+import { Panel } from "@/components/ui/Panel";
+import { contentTopics, getLabTopic, labTopics } from "@/data/topics";
+
+const routeModules = [
+  {
+    path: "/",
+    Component: lazy(() => import("@/app/routes/OverviewRoute")),
+  },
+  {
+    path: "/svg",
+    Component: lazy(() => import("@/app/routes/SvgRoute")),
+  },
+  {
+    path: "/forms",
+    Component: lazy(() => import("@/app/routes/FormsRoute")),
+  },
+  {
+    path: "/server-state",
+    Component: lazy(() => import("@/app/routes/ServerStateRoute")),
+  },
+  {
+    path: "/optimistic-ui",
+    Component: lazy(() => import("@/app/routes/OptimisticUiRoute")),
+  },
+  {
+    path: "/render-performance",
+    Component: lazy(() => import("@/app/routes/RenderPerformanceRoute")),
+  },
+  {
+    path: "/virtual-lists",
+    Component: lazy(() => import("@/app/routes/VirtualListsRoute")),
+  },
+  {
+    path: "/route-splitting",
+    Component: lazy(() => import("@/app/routes/RouteSplittingRoute")),
+  },
+  {
+    path: "/tooling",
+    Component: lazy(() => import("@/app/routes/ToolingRoute")),
+  },
+] as const;
 
 export default function App() {
+  return (
+    <BrowserRouter>
+      <AppFrame />
+    </BrowserRouter>
+  );
+}
+
+function AppFrame() {
+  const location = useLocation();
+  const activeTopic = getLabTopic(location.pathname);
+
   return (
     <div className="lab-shell relative min-h-screen xl:h-screen xl:overflow-hidden">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-[34rem] bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.16),_transparent_55%)]"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[36rem] bg-[radial-gradient(circle_at_top,_rgba(34,211,238,0.14),_transparent_58%)]"
       />
 
-      <main className="mx-auto flex min-h-screen w-full max-w-[1680px] flex-col px-3 py-3 sm:px-4 lg:px-5 xl:h-screen">
-        <header className="panel flex shrink-0 flex-wrap items-center justify-between gap-3 px-5 py-4 lg:px-6">
-          <a
-            className="font-display text-lg font-semibold tracking-tight text-slate-950"
-            href="#overview"
-          >
-            React Daily Lab
-          </a>
+      <main className="mx-auto flex min-h-screen w-full max-w-[1720px] flex-col px-3 py-3 sm:px-4 lg:px-5 xl:h-screen">
+        <header className="panel flex shrink-0 flex-wrap items-center justify-between gap-4 px-5 py-4 lg:px-6">
+          <div className="space-y-3">
+            <Link className="section-kicker" to="/">
+              React Daily Lab
+            </Link>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <span className="mono-chip">
+              {contentTopics.length} topic routes
+            </span>
+          </div>
         </header>
 
         <div className="mt-4 grid gap-4 xl:min-h-0 xl:flex-1 xl:grid-cols-[320px_minmax(0,1fr)]">
-          <SideRail sections={labSections.map((section) => ({ ...section }))} />
+          <SideRail topics={labTopics} />
 
           <div className="space-y-4 xl:lab-scroll xl:min-h-0 xl:overflow-y-auto xl:pr-1">
-            <HeroSection />
-            <SvgLab />
-            <RequestFormLab />
-            <ServerStateLab />
-            <RenderPerformanceLab />
-            <ToolingLab />
+            <Suspense fallback={<RouteFallback />}>
+              <Routes>
+                {routeModules.map(({ path, Component }) => (
+                  <Route element={<Component />} key={path} path={path} />
+                ))}
+                <Route element={<Navigate replace to="/" />} path="*" />
+              </Routes>
+            </Suspense>
           </div>
         </div>
       </main>
     </div>
+  );
+}
+
+function RouteFallback() {
+  return (
+    <Panel className="p-6">
+      <div className="space-y-4">
+        <div className="h-4 w-32 rounded-full bg-slate-800/90" />
+        <div className="h-10 w-3/4 rounded-[20px] bg-slate-900/80" />
+        <div className="grid gap-4 lg:grid-cols-2">
+          <div className="h-48 rounded-[24px] border border-dashed border-slate-800/90 bg-slate-900/72" />
+          <div className="h-48 rounded-[24px] border border-dashed border-slate-800/90 bg-slate-900/72" />
+        </div>
+      </div>
+    </Panel>
   );
 }

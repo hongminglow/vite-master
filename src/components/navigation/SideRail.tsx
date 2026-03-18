@@ -1,59 +1,73 @@
 import { ChevronRight, ShieldCheck, Zap } from "lucide-react";
+import { NavLink } from "react-router";
 
 import { Badge } from "@/components/ui/Badge";
 import { Panel } from "@/components/ui/Panel";
-
-type NavSection = {
-  id: string;
-  label: string;
-  detail: string;
-};
+import { type LabTopic } from "@/data/topics";
+import { cn } from "@/lib/cn";
 
 type SideRailProps = {
-  sections: NavSection[];
+  topics: LabTopic[];
 };
 
-export function SideRail({ sections }: SideRailProps) {
+export function SideRail({ topics }: SideRailProps) {
   return (
     <aside className="space-y-4 xl:lab-scroll xl:min-h-0 xl:overflow-y-auto xl:pr-1">
       <Panel className="p-5">
-        <div className="space-y-4">
-          <div>
-            <h2 className="mt-4 font-display text-2xl font-semibold text-slate-950">
-              What this lab covers
-            </h2>
-          </div>
-          <nav aria-label="Section navigation" className="space-y-2">
-            {sections.map((section) => (
-              <a
-                className="group flex items-center justify-between rounded-2xl border border-slate-700/90 bg-slate-900/75 px-4 py-3 transition-colors duration-200 hover:bg-slate-800"
-                href={`#${section.id}`}
-                key={section.id}
-              >
-                <div>
-                  <div className="text-sm font-medium text-slate-900">
-                    {section.label}
+        <nav aria-label="Topic navigation" className="space-y-2">
+          {topics.map((topic) => (
+            <NavLink
+              className={({ isActive }) =>
+                cn(
+                  "group flex items-center justify-between rounded-2xl border px-4 py-3 transition-colors duration-200",
+                  isActive
+                    ? "border-emerald-500/30 bg-emerald-500/12"
+                    : "border-slate-700/90 bg-slate-900/75 hover:bg-slate-800/90",
+                )
+              }
+              end={topic.path === "/"}
+              key={topic.path}
+              to={topic.path}
+            >
+              {({ isActive }) => (
+                <>
+                  <div>
+                    <div
+                      className={cn(
+                        "text-sm font-medium",
+                        isActive ? "text-emerald-200" : "text-slate-950",
+                      )}
+                    >
+                      {topic.navLabel}
+                    </div>
+                    <div className="mt-1 text-xs text-slate-500">
+                      {topic.detail}
+                    </div>
                   </div>
-                  <div className="text-xs text-slate-500">{section.detail}</div>
-                </div>
-                <ChevronRight className="size-4 text-slate-400 transition-transform duration-200 group-hover:translate-x-0.5" />
-              </a>
-            ))}
-          </nav>
-        </div>
+                  <ChevronRight
+                    className={cn(
+                      "size-4 transition-transform duration-200",
+                      isActive
+                        ? "text-emerald-300"
+                        : "text-slate-400 group-hover:translate-x-0.5",
+                    )}
+                  />
+                </>
+              )}
+            </NavLink>
+          ))}
+        </nav>
       </Panel>
 
       <Panel className="border-emerald-500/30 bg-emerald-500/10 p-5">
-        <div className="flex items-center gap-2 text-emerald-700">
+        <div className="flex items-center gap-2 text-emerald-600">
           <ShieldCheck className="size-4" />
           <p className="text-sm font-semibold">Research-backed defaults</p>
         </div>
-        <ul className="mt-4 space-y-3 text-sm leading-6 text-emerald-600">
-          <li>
-            Use local state for UI state, server-state tools for async cache.
-          </li>
-          <li>Keep SVGs tiny before turning them into components.</li>
-          <li>Prefer cached fast lint by default, typed lint on demand.</li>
+        <ul className="mt-4 space-y-3 text-sm leading-6 text-emerald-100">
+          <li>Split by route before reaching for more exotic bundle tricks.</li>
+          <li>Virtualize only when real list size and row cost justify it.</li>
+          <li>Optimistic UI should always keep a rollback path close by.</li>
         </ul>
       </Panel>
 
@@ -73,13 +87,19 @@ export function SideRail({ sections }: SideRailProps) {
             className="border-white/15 bg-white/10 text-white"
             variant="dark"
           >
+            React Router 7
+          </Badge>
+          <Badge
+            className="border-white/15 bg-white/10 text-white"
+            variant="dark"
+          >
             Tailwind 4
           </Badge>
           <Badge
             className="border-white/15 bg-white/10 text-white"
             variant="dark"
           >
-            Vite 8
+            TanStack tools
           </Badge>
         </div>
       </Panel>
