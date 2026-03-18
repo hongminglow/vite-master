@@ -47,7 +47,7 @@ export function RenderPerformanceLab() {
             <label className="relative block">
               <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
               <input
-                className="w-full rounded-full border border-slate-300 bg-white py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition-colors duration-200 placeholder:text-slate-400 focus:border-slate-950"
+                className="w-full rounded-full border border-slate-700 bg-slate-950/85 py-3 pl-11 pr-4 text-sm text-slate-100 outline-none transition-colors duration-200 placeholder:text-slate-500 focus:border-amber-300"
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search by pain point, library, or pattern"
                 value={query}

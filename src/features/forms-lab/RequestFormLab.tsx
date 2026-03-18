@@ -28,7 +28,7 @@ const requestSchema = z.object({
 type RequestFormValues = z.infer<typeof requestSchema>
 
 const fieldClassName =
-  'mt-2 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition-colors duration-200 placeholder:text-slate-400 focus:border-slate-950'
+  'mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950/85 px-4 py-3 text-sm text-slate-100 shadow-sm outline-none transition-colors duration-200 placeholder:text-slate-500 focus:border-amber-300'
 
 function createDefaultValues(): RequestFormValues {
   const dueDate = new Date(Date.now() + 1000 * 60 * 60 * 24 * 3)
@@ -196,9 +196,9 @@ export function RequestFormLab() {
               />
             </div>
 
-            <label className="flex items-start gap-3 rounded-[28px] border border-slate-200/80 bg-white px-4 py-4 text-sm text-slate-700">
+            <label className="flex items-start gap-3 rounded-[28px] border border-slate-700/90 bg-slate-950/70 px-4 py-4 text-sm text-slate-300">
               <input
-                className="mt-1 size-4 rounded border-slate-300"
+                className="mt-1 size-4 rounded border-slate-600 bg-slate-900 text-amber-300"
                 type="checkbox"
                 {...form.register('needsSvgSupport')}
               />

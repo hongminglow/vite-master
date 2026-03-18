@@ -22,7 +22,7 @@ export function SectionShell({
 }: SectionShellProps) {
   return (
     <Panel className={cn('overflow-hidden', className)} id={id}>
-      <div className="border-b border-slate-200/80 px-6 py-6 lg:px-8">
+      <div className="border-b border-slate-200/80 px-5 py-5 lg:px-6">
         <div className="space-y-4">
           <span className="section-kicker">{eyebrow}</span>
           <div className="space-y-3">
@@ -35,7 +35,7 @@ export function SectionShell({
           </div>
         </div>
       </div>
-      <div className="p-6 lg:p-8">{children}</div>
+      <div className="p-5 lg:p-6">{children}</div>
     </Panel>
   )
 }

@@ -1,8 +1,8 @@
-import { ArrowRight, Boxes, PackageSearch, Zap } from 'lucide-react'
+import { ArrowRight, Boxes, PackageSearch, Zap } from "lucide-react";
 
-import { buttonStyles } from '@/components/ui/button-styles'
-import { Panel } from '@/components/ui/Panel'
-import { heroCapabilities, heroMetrics } from '@/data/site'
+import { buttonStyles } from "@/components/ui/button-styles";
+import { Panel } from "@/components/ui/Panel";
+import { heroCapabilities, heroMetrics } from "@/data/site";
 
 export function HeroSection() {
   return (
@@ -26,22 +26,22 @@ export function HeroSection() {
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <a className={buttonStyles('primary')} href="#svg-lab">
+            <a className={buttonStyles("primary")} href="#svg-lab">
               Explore the labs
               <ArrowRight className="size-4" />
             </a>
-            <a className={buttonStyles('secondary')} href="#tooling-lab">
+            <a className={buttonStyles("secondary")} href="#tooling-lab">
               Jump to build and lint tips
             </a>
           </div>
 
           <div className="flex flex-wrap gap-2">
             {[
-              'Tailwind 4',
-              'TanStack Query',
-              'React Hook Form + Zod',
-              'SVGR + SVGO',
-              'Bundle analyzer',
+              "Tailwind 4",
+              "TanStack Query",
+              "React Hook Form + Zod",
+              "SVGR + SVGO",
+              "Bundle analyzer",
             ].map((label) => (
               <span className="mono-chip" key={label}>
                 {label}
@@ -60,7 +60,7 @@ export function HeroSection() {
 
           <div className="mt-5 space-y-4">
             {heroCapabilities.map((capability, index) => {
-              const Icon = index % 2 === 0 ? PackageSearch : Zap
+              const Icon = index % 2 === 0 ? PackageSearch : Zap;
 
               return (
                 <div
@@ -79,7 +79,7 @@ export function HeroSection() {
                     {capability.summary}
                   </p>
                 </div>
-              )
+              );
             })}
           </div>
 
@@ -112,5 +112,5 @@ export function HeroSection() {
         ))}
       </div>
     </section>
-  )
+  );
 }

@@ -12,11 +12,34 @@
 
 @layer base {
   :root {
-    color-scheme: light;
+    color-scheme: dark;
   }
 
   * {
     box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.45) transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.4);
+    background-clip: padding-box;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.58);
+    background-clip: padding-box;
   }
 
   html {
@@ -27,14 +50,15 @@
     min-height: 100vh;
     margin: 0;
     background:
-      radial-gradient(circle at top left, rgba(59, 130, 246, 0.18), transparent 28rem),
-      radial-gradient(circle at top right, rgba(251, 191, 36, 0.18), transparent 22rem),
-      linear-gradient(180deg, #f6fbff 0%, #eff6ff 48%, #f8fafc 100%);
-    color: #0f172a;
+      radial-gradient(circle at top left, rgba(34, 211, 238, 0.12), transparent 30rem),
+      radial-gradient(circle at top right, rgba(34, 197, 94, 0.12), transparent 24rem),
+      linear-gradient(180deg, #020617 0%, #06111f 42%, #0f172a 100%);
+    color: #e5eef8;
     font-family: var(--font-sans);
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
 
   a {
@@ -49,31 +73,131 @@
     font: inherit;
   }
 
+  code {
+    border: 1px solid rgba(51, 65, 85, 0.92);
+    border-radius: 0.65rem;
+    background: rgba(15, 23, 42, 0.9);
+    color: #e2e8f0;
+  }
+
   ::selection {
-    background: #fdba74;
-    color: #0f172a;
+    background: rgba(34, 197, 94, 0.35);
+    color: #f8fafc;
   }
 }
 
 @layer components {
   .panel {
-    @apply rounded-[28px] border border-slate-200/80 bg-white/90 shadow-[0_24px_60px_-32px_rgba(15,23,42,0.35)] backdrop-blur;
+    @apply rounded-[28px] border border-slate-800/90 bg-slate-950/84 shadow-[0_28px_80px_-38px_rgba(2,6,23,0.95)] backdrop-blur;
   }
 
   .soft-grid {
     background-image:
-      linear-gradient(rgba(148, 163, 184, 0.12) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(148, 163, 184, 0.12) 1px, transparent 1px);
+      linear-gradient(rgba(71, 85, 105, 0.28) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(71, 85, 105, 0.28) 1px, transparent 1px);
     background-position: center;
     background-size: 32px 32px;
   }
 
   .section-kicker {
-    @apply inline-flex items-center rounded-full border border-slate-300/80 bg-slate-50 px-3 py-1 text-[0.72rem] font-medium uppercase tracking-[0.24em] text-slate-600;
+    @apply inline-flex items-center rounded-full border border-slate-700/90 bg-slate-900/80 px-3 py-1 text-[0.72rem] font-medium uppercase tracking-[0.24em] text-slate-300;
   }
 
   .mono-chip {
-    @apply inline-flex items-center rounded-full border border-slate-300/80 bg-slate-950 px-3 py-1 font-mono text-xs text-slate-50;
+    @apply inline-flex items-center rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3 py-1 font-mono text-xs text-emerald-100;
+  }
+
+  .lab-scroll {
+    scrollbar-gutter: stable;
+    overscroll-behavior: contain;
+  }
+}
+
+@layer utilities {
+  .lab-shell :where([class*='text-slate-950']) {
+    color: #f8fafc;
+  }
+
+  .lab-shell :where([class*='text-slate-900']) {
+    color: #f8fafc;
+  }
+
+  .lab-shell :where([class*='text-slate-800']) {
+    color: #e2e8f0;
+  }
+
+  .lab-shell :where([class*='text-slate-700']) {
+    color: #d6e2ef;
+  }
+
+  .lab-shell :where([class*='text-slate-600']) {
+    color: #adc0d4;
+  }
+
+  .lab-shell :where([class*='text-slate-500']) {
+    color: #91a5bb;
+  }
+
+  .lab-shell :where([class*='text-slate-400']) {
+    color: #7f95ad;
+  }
+
+  .lab-shell :where([class*='text-slate-300']) {
+    color: #cbd5e1;
+  }
+
+  .lab-shell :where([class*='text-slate-200']) {
+    color: #e2e8f0;
+  }
+
+  .lab-shell :where([class*='text-amber-950']),
+  .lab-shell :where([class*='text-amber-900']) {
+    color: #fbbf24;
+  }
+
+  .lab-shell :where([class*='text-emerald-900']),
+  .lab-shell :where([class*='text-emerald-700']),
+  .lab-shell :where([class*='text-emerald-600']) {
+    color: #86efac;
+  }
+
+  .lab-shell :where([class*='text-rose-600']) {
+    color: #fb7185;
+  }
+
+  .lab-shell :where([class*='bg-white']),
+  .lab-shell :where([class*='bg-slate-50']),
+  .lab-shell :where([class*='bg-slate-100']) {
+    background-color: rgba(15, 23, 42, 0.9);
+  }
+
+  .lab-shell :where([class*='bg-amber-50']) {
+    background-color: rgba(120, 53, 15, 0.22);
+  }
+
+  .lab-shell :where([class*='bg-emerald-50']) {
+    background-color: rgba(6, 78, 59, 0.22);
+  }
+
+  .lab-shell :where([class*='border-slate-200']),
+  .lab-shell :where([class*='border-slate-300']) {
+    border-color: rgba(51, 65, 85, 0.92);
+  }
+
+  .lab-shell :where([class*='border-amber-200']),
+  .lab-shell :where([class*='border-amber-300']) {
+    border-color: rgba(245, 158, 11, 0.34);
+  }
+
+  .lab-shell :where([class*='border-emerald-300']),
+  .lab-shell :where([class*='border-emerald-500']) {
+    border-color: rgba(16, 185, 129, 0.34);
+  }
+
+  .lab-shell :where([class*='hover:bg-white']):hover,
+  .lab-shell :where([class*='hover:bg-slate-50']):hover,
+  .lab-shell :where([class*='hover:bg-slate-100']):hover {
+    background-color: rgba(30, 41, 59, 0.92);
   }
 }
 
