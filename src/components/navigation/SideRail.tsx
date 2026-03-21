@@ -1,5 +1,6 @@
+import { useEffect, useRef } from "react";
 import { ChevronRight, ShieldCheck, Zap } from "lucide-react";
-import { NavLink } from "react-router";
+import { NavLink, useLocation } from "react-router";
 
 import { Badge } from "@/components/ui/Badge";
 import { Panel } from "@/components/ui/Panel";
@@ -11,6 +12,18 @@ type SideRailProps = {
 };
 
 export function SideRail({ topics }: SideRailProps) {
+  const { pathname } = useLocation();
+  const activeRef = useRef<HTMLAnchorElement | null>(null);
+
+  useEffect(() => {
+    if (activeRef.current) {
+      activeRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    }
+  }, [pathname]);
+
   return (
     <aside className="space-y-4">
       <Panel className="p-5">
@@ -27,6 +40,11 @@ export function SideRail({ topics }: SideRailProps) {
               }
               end={topic.path === "/"}
               key={topic.path}
+              ref={(node) => {
+                if (pathname === topic.path) {
+                  activeRef.current = node;
+                }
+              }}
               to={topic.path}
             >
               {({ isActive }) => (

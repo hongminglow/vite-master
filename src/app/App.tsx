@@ -98,7 +98,6 @@ function AppFrame() {
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "auto" });
-    sidebarScrollRef.current?.scrollTo({ top: 0, behavior: "auto" });
     contentScrollRef.current?.scrollTo({ top: 0, behavior: "auto" });
   }, [location.pathname, location.search]);
 
