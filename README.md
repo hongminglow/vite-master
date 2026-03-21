@@ -4,7 +4,7 @@ A route-based React + Tailwind handbook for the frontend requirements that keep 
 
 Instead of one long demo page, every major topic now lives on its own route. That makes the app easier to grow, makes route splitting real instead of theoretical, and turns the repo into something you can revisit later when a task comes up again.
 
-Last verified: March 18, 2026
+Last verified: March 21, 2026
 
 ## What this repo is for
 
@@ -18,6 +18,14 @@ It is trying to answer questions like:
 - When should we virtualize a list?
 - How should we split routes and optional features?
 - How do we debug bundle size, build slowness, and slow ESLint runs?
+- Should filter state live in the URL or in useState?
+- How do we keep one crash from killing the entire page?
+- When should we debounce vs throttle vs use useDeferredValue?
+- How should we guard routes by auth and role?
+- How do we build a toast system with proper accessibility?
+- When should we use the native dialog element instead of a library?
+- How do we serve responsive images without layout shift?
+- What does a practical test strategy look like for React + Vite?
 
 The goal is to keep both the app and the README practical:
 
@@ -29,17 +37,25 @@ The goal is to keep both the app and the README practical:
 
 The app currently ships these routes:
 
-| Route                 | Topic                 | What it demonstrates                                                    |
-| --------------------- | --------------------- | ----------------------------------------------------------------------- |
-| `/`                   | Overview              | Totals, route directory, scripts, bookmarks, and next topics            |
-| `/svg`                | SVG workflow          | Raw SVG files vs SVGR components, recoloring, resizing, and SVG cleanup |
-| `/forms`              | Forms                 | React Hook Form + Zod, validation, and repeatable form ergonomics       |
-| `/server-state`       | Server-state          | Cache ownership, freshness, refetching, and async boundaries            |
-| `/optimistic-ui`      | Optimistic UI         | Mutations with rollback using TanStack Query                            |
-| `/render-performance` | Render responsiveness | `useDeferredValue`, `startTransition`, and lazy initialization          |
-| `/virtual-lists`      | Virtualized lists     | `@tanstack/react-virtual` with deferred search                          |
-| `/route-splitting`    | Route splitting       | Lazy route modules, optional secondary chunks, and when to split        |
-| `/tooling`            | Tooling playbook      | Bundle analysis, slow build fixes, and slow ESLint fixes                |
+| Route                 | Topic                 | What it demonstrates                                                        |
+| --------------------- | --------------------- | --------------------------------------------------------------------------- |
+| `/`                   | Overview              | Totals, route directory, scripts, bookmarks, and next topics                |
+| `/svg`                | SVG workflow          | Raw SVG files vs SVGR components, recoloring, resizing, and SVG cleanup     |
+| `/forms`              | Forms                 | React Hook Form + Zod, validation, and repeatable form ergonomics           |
+| `/server-state`       | Server-state          | Cache ownership, freshness, refetching, and async boundaries                |
+| `/optimistic-ui`      | Optimistic UI         | Mutations with rollback using TanStack Query                                |
+| `/render-performance` | Render responsiveness | `useDeferredValue`, `startTransition`, and lazy initialization              |
+| `/virtual-lists`      | Virtualized lists     | `@tanstack/react-virtual` with deferred search                              |
+| `/route-splitting`    | Route splitting       | Lazy route modules, optional secondary chunks, and when to split            |
+| `/tooling`            | Tooling playbook      | Bundle analysis, slow build fixes, and slow ESLint fixes                    |
+| `/url-state`          | URL state             | Filters, pagination, and sorting backed by `useSearchParams` + Zod          |
+| `/error-handling`     | Error handling        | Route-level and component-level error boundaries with retry and recovery    |
+| `/input-timing`       | Input timing          | Live comparison of debounce, throttle, and `useDeferredValue`               |
+| `/auth-routing`       | Auth routing          | Simulated login, role-gated UI, and redirect-after-login patterns           |
+| `/notifications`      | Notifications         | Toast system built from scratch with portals, accessibility, and auto-dismiss |
+| `/dialogs`            | Dialogs               | Native `<dialog>` for modals with focus trap, scroll lock, and forms        |
+| `/media`              | Media                 | Responsive images, srcset, lazy loading, and layout shift prevention        |
+| `/testing`            | Testing               | Testing trophy, Vitest + Testing Library example patterns, and MSW mocking  |
 
 ## Why the app moved to routes
 
@@ -374,17 +390,208 @@ From the verified analyze build on March 18, 2026:
 - ignore generated output like `dist` and `.cache`
 - only keep expensive rules that are catching real bugs in your codebase
 
+## 9. URL search params
+
+### Better default
+
+If a user should be able to share, bookmark, or navigate back to a filtered view, the state belongs in the URL.
+
+### How this route helps
+
+The `/url-state` route shows a filterable task table where every control — search, status, priority, sort, direction, pagination — writes directly to `useSearchParams`. The URL is always the source of truth.
+
+- Parse and validate params with a Zod schema so invalid values get safe defaults
+- Reset pagination when filters change
+- Use `replace: true` so filter changes do not flood the history stack
+- Copy the URL and paste it elsewhere to get the exact same view
+
+### Common mistakes
+
+- Duplicating URL state into `useState` — pick one source of truth.
+- Forgetting to reset pagination when filters change.
+- Using push navigation on every keystroke instead of replace.
+
+## 10. Error boundaries and recovery
+
+### Better default
+
+Wrap routes and risky widgets in error boundaries so one crash never shows a white screen.
+
+### How this route helps
+
+The `/error-handling` route demonstrates:
+
+- a **component-level boundary** that catches a widget crash without affecting the rest of the page
+- a **route-level boundary** that replaces the entire route content with a retry fallback
+- a clear explanation of when to use each level
+
+### Key insight
+
+Error boundaries catch rendering and lifecycle errors. They do not catch errors in event handlers or async code — use `try/catch` for those. TanStack Query's `throwOnError` option bridges async errors into the boundary system.
+
+## 11. Debounce, throttle, and timing
+
+### Better default
+
+- Debounce for API calls and auto-save (fire once after input settles).
+- Throttle for scroll, resize, and drag handlers (fire at regular intervals).
+- `useDeferredValue` for expensive rendering that should not block typing.
+
+### How this route helps
+
+The `/input-timing` route shows a live comparison:
+
+- type in the input and watch raw, debounced, and deferred values update at different times
+- a color-coded event timeline shows exactly when each strategy fires
+- side-by-side value display makes the delay visible
+
+### When to use which
+
+| Strategy | Use when | Watch out |
+|---|---|---|
+| Debounce | API search, auto-save | Adds perceived latency |
+| Throttle | Scroll, resize, drag | Less responsive for typing |
+| `useDeferredValue` | Expensive derived renders | React-only, does not prevent API calls |
+
+## 12. Auth guards and permissions
+
+### Better default
+
+- Use a context-based auth provider with a role hierarchy.
+- Gate UI sections with a `RoleGate` component instead of scattered `if (user.role === 'admin')` checks.
+- Store the intended destination before redirecting to login.
+
+### How this route helps
+
+The `/auth-routing` route provides a simulated login with three roles (viewer, editor, admin). Switching roles instantly shows which UI sections become visible or hidden.
+
+### Key patterns
+
+- **ProtectedRoute** — wraps route content, redirects to login if unauthenticated.
+- **RoleGate** — conditionally renders children based on user role.
+- **Redirect-back** — stores the intended URL before redirecting to login.
+
+### Important reminder
+
+Client-side guards are for UX, not security. Always enforce permissions on the server.
+
+## 13. Toast and notification patterns
+
+### Better default
+
+Build a toast system using context for state management and `createPortal` for rendering outside the main DOM tree.
+
+### How this route helps
+
+The `/notifications` route includes a full toast playground:
+
+- four toast types: success, error, warning, info
+- auto-dismiss with configurable duration
+- a persistent toast option (duration = 0)
+- action buttons inside toasts (e.g., "Undo")
+- accessible markup with `role="status"` and `aria-live="polite"`
+
+### Key design concerns
+
+- **Portal rendering** — toasts escape parent overflow and z-index stacking.
+- **Queue limit** — cap visible toasts (5 in this demo) to prevent overflow.
+- **Accessibility** — screen readers announce new toasts without interrupting the user.
+
+### Popular alternatives
+
+- [sonner](https://sonner.emilkowal.dev/) — beautiful defaults, small bundle
+- [react-hot-toast](https://react-hot-toast.com/) — minimal API, lightweight
+
+## 14. Modal and dialog patterns
+
+### Better default
+
+Use the native `<dialog>` element. It provides focus trapping, Escape to close, scroll lock, and top-layer rendering with zero dependencies.
+
+### How this route helps
+
+The `/dialogs` route shows:
+
+- a **confirmation dialog** for destructive actions
+- a **form dialog** with auto-focused input and tab trapping
+- the accessibility checklist that most teams miss
+
+### What native dialog gives you for free
+
+- Focus trap — built-in, no library needed
+- Escape to close — fires a cancel event you can intercept
+- Top layer — renders above everything, no z-index games
+- Scroll lock — body scrolling is automatically blocked
+- Backdrop — styleable via `::backdrop` pseudo-element
+
+Browser support is excellent. For most product apps, you no longer need a dialog library.
+
+## 15. Responsive images and media
+
+### Better default
+
+Serve the right image size and format. This is the single highest-impact performance optimization most frontend teams skip.
+
+### How this route helps
+
+The `/media` route covers:
+
+- `srcset` and `sizes` for responsive resolution
+- `<picture>` for format negotiation (WebP → JPEG fallback)
+- `loading="lazy"` for below-the-fold images
+- CSS `aspect-ratio` to prevent layout shift
+- Core Web Vitals impact (LCP, CLS, INP)
+
+### Useful tools
+
+- [Squoosh](https://squoosh.app/) for manual image compression
+- [sharp](https://sharp.pixelplumbing.com/) for build-time image processing
+- `vite-plugin-image-optimizer` for automated optimization
+
+## 16. Testing strategy
+
+### Better default
+
+Follow the testing trophy:
+
+1. **Static analysis** (always on) — TypeScript + ESLint
+2. **Unit tests** (some) — pure functions, schemas, and custom hooks
+3. **Integration tests** (most) — components with real dependencies, asserted from the user's perspective
+4. **E2E tests** (few) — critical user journeys only
+
+### How this route helps
+
+The `/testing` route documents:
+
+- the testing trophy with recommended proportions
+- working code examples for component, hook, API mock, and schema tests
+- recommended libraries (Vitest, Testing Library, MSW)
+- testing principles to follow
+
+### Key principles
+
+- Query by role and label, not by class name.
+- Mock at the network layer (MSW), not at the fetch function.
+- Use fake timers for debounce and animation tests.
+- Test what the user sees and does, not implementation details.
+
+### Useful tools
+
+- [Vitest](https://vitest.dev/)
+- [Testing Library](https://testing-library.com/)
+- [MSW](https://mswjs.io/)
+
 ## Popular React requirements worth tracking next
 
-This repo now covers more daily work than the first version, but the next highly practical additions would be:
+This repo now covers the vast majority of daily frontend work. Future additions worth considering:
 
-1. URL search params for tables, filters, and tabs
-2. Error boundaries and route-level recovery states
-3. Responsive image loading and asset format decisions
-4. Test strategy for components, hooks, async flows, and forms
-5. Auth guards and permission-aware routing
+1. Drag-and-drop interactions with optimistic reorder
+2. Infinite scroll with `useInfiniteQuery`
+3. Multi-step form wizards with per-step validation
+4. Dark mode toggle with CSS custom properties
+5. Internationalization (i18n) patterns
 
-Those topics come up often enough that they would make sense as future route modules too.
+Those topics come up less frequently but would round out the handbook further.
 
 ## Project structure
 
@@ -394,14 +601,22 @@ src/
     App.tsx
     providers.tsx
     routes/
+      AuthRoutingRoute.tsx
+      DialogsRoute.tsx
+      ErrorHandlingRoute.tsx
       FormsRoute.tsx
+      InputTimingRoute.tsx
+      MediaRoute.tsx
+      NotificationsRoute.tsx
       OptimisticUiRoute.tsx
       OverviewRoute.tsx
       RenderPerformanceRoute.tsx
       RouteSplittingRoute.tsx
       ServerStateRoute.tsx
       SvgRoute.tsx
+      TestingRoute.tsx
       ToolingRoute.tsx
+      UrlStateRoute.tsx
       VirtualListsRoute.tsx
   assets/
     icons/
@@ -422,8 +637,22 @@ src/
     topics.ts
     virtual-tasks.ts
   features/
+    auth-routing-lab/
+      context/
+      components/
+    dialogs-lab/
+      components/
+    error-handling-lab/
+      components/
     forms-lab/
     hero/
+    input-timing-lab/
+      hooks/
+      components/
+    media-lab/
+    notifications-lab/
+      context/
+      components/
     optimistic-ui-lab/
       api/
     overview/
@@ -433,7 +662,11 @@ src/
     server-state/
       api/
     svg-lab/
+    testing-lab/
     tooling-lab/
+    url-state-lab/
+      data/
+      components/
     virtual-list-lab/
   lib/
     cn.ts
@@ -464,13 +697,14 @@ bun run svg:optimize
 
 ## Sources and research links
 
-These sources shaped the current route additions and recommendations in this README as of March 18, 2026:
+These sources shaped the current route additions and recommendations in this README as of March 21, 2026:
 
 - [React `lazy`](https://react.dev/reference/react/lazy)
 - [React `useDeferredValue`](https://react.dev/reference/react/useDeferredValue)
 - [React `startTransition`](https://react.dev/reference/react/startTransition)
 - [React Router home](https://reactrouter.com/_docs//home)
 - [React Router `createBrowserRouter` API note on lazy routes](https://api.reactrouter.com/v7/functions/react-router.createBrowserRouter.html)
+- [React Router `useSearchParams`](https://reactrouter.com/hooks/use-search-params)
 - [TanStack Query important defaults](https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults)
 - [TanStack Query optimistic updates guide](https://tanstack.com/query/latest/docs/framework/react/guides/optimistic-updates)
 - [TanStack Virtual](https://tanstack.com/virtual)
@@ -484,3 +718,12 @@ These sources shaped the current route additions and recommendations in this REA
 - [bundlejs](https://bundlejs.com/)
 - [Bundlephobia](https://bundlephobia.com/)
 - [react-window](https://github.com/bvaughn/react-window)
+- [MDN `<dialog>` element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog)
+- [MDN `srcset` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#srcset)
+- [MDN `loading` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#loading)
+- [web.dev Core Web Vitals](https://web.dev/articles/vitals)
+- [Vitest](https://vitest.dev/)
+- [Testing Library](https://testing-library.com/)
+- [MSW (Mock Service Worker)](https://mswjs.io/)
+- [sonner](https://sonner.emilkowal.dev/)
+- [react-hot-toast](https://react-hot-toast.com/)

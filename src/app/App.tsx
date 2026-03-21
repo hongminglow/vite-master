@@ -49,6 +49,38 @@ const routeModules = [
     path: "/tooling",
     Component: lazy(() => import("@/app/routes/ToolingRoute")),
   },
+  {
+    path: "/url-state",
+    Component: lazy(() => import("@/app/routes/UrlStateRoute")),
+  },
+  {
+    path: "/error-handling",
+    Component: lazy(() => import("@/app/routes/ErrorHandlingRoute")),
+  },
+  {
+    path: "/input-timing",
+    Component: lazy(() => import("@/app/routes/InputTimingRoute")),
+  },
+  {
+    path: "/auth-routing",
+    Component: lazy(() => import("@/app/routes/AuthRoutingRoute")),
+  },
+  {
+    path: "/notifications",
+    Component: lazy(() => import("@/app/routes/NotificationsRoute")),
+  },
+  {
+    path: "/dialogs",
+    Component: lazy(() => import("@/app/routes/DialogsRoute")),
+  },
+  {
+    path: "/media",
+    Component: lazy(() => import("@/app/routes/MediaRoute")),
+  },
+  {
+    path: "/testing",
+    Component: lazy(() => import("@/app/routes/TestingRoute")),
+  },
 ] as const;
 
 export default function App() {

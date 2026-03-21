@@ -106,6 +106,86 @@ export const labTopics: LabTopic[] = [
     category: 'Delivery',
     tags: ['bundle analyzer', 'eslint', 'vite'],
   },
+  {
+    path: '/url-state',
+    navLabel: 'URL State',
+    title: 'URL search params',
+    detail: 'Filters, pagination, and sorting that live in the URL instead of useState.',
+    summary:
+      'Use useSearchParams as the single source of truth for filter state so links are shareable, the back button works, and state survives refresh.',
+    category: 'Data and state',
+    tags: ['useSearchParams', 'zod', 'shareable URLs'],
+  },
+  {
+    path: '/error-handling',
+    navLabel: 'Error Handling',
+    title: 'Error boundaries and recovery',
+    detail: 'Catch rendering and async errors so one crash never kills the whole page.',
+    summary:
+      'Wrap routes and widgets in error boundaries with retry actions so users see recovery options instead of a white screen.',
+    category: 'Delivery',
+    tags: ['ErrorBoundary', 'recovery', 'graceful degradation'],
+  },
+  {
+    path: '/input-timing',
+    navLabel: 'Input Timing',
+    title: 'Debounce, throttle, and timing',
+    detail: 'Control when expensive work fires in response to user input.',
+    summary:
+      'Debounce API calls, throttle scroll handlers, and defer heavy renders — each solves a different timing problem.',
+    category: 'Performance',
+    tags: ['debounce', 'throttle', 'useDeferredValue'],
+  },
+  {
+    path: '/auth-routing',
+    navLabel: 'Auth Routing',
+    title: 'Auth guards and permissions',
+    detail: 'Protected routes, role gates, and redirect-after-login patterns.',
+    summary:
+      'Guard routes with context-based auth, gate UI sections by role, and redirect users back to where they were after login.',
+    category: 'Delivery',
+    tags: ['protected routes', 'role guard', 'redirect'],
+  },
+  {
+    path: '/notifications',
+    navLabel: 'Notifications',
+    title: 'Toast and notification patterns',
+    detail: 'Build a toast system with portals, auto-dismiss, and accessibility.',
+    summary:
+      'Use context and createPortal to render toasts outside the main DOM tree with proper aria-live, auto-dismiss timing, and action support.',
+    category: 'Foundations',
+    tags: ['toast', 'portal', 'aria-live'],
+  },
+  {
+    path: '/dialogs',
+    navLabel: 'Dialogs',
+    title: 'Modal and dialog patterns',
+    detail: 'Native <dialog> for focus trapping, scroll lock, and zero-dependency modals.',
+    summary:
+      'Use the native dialog element for modals that get focus trapping, backdrop clicks, Escape to close, and scroll lock without any library.',
+    category: 'Foundations',
+    tags: ['dialog', 'modal', 'focus trap'],
+  },
+  {
+    path: '/media',
+    navLabel: 'Media',
+    title: 'Responsive images and media',
+    detail: 'srcset, lazy loading, format negotiation, and layout shift prevention.',
+    summary:
+      'Serve the right image size and format so pages load fast without layout shift — the single highest-impact performance optimization most teams skip.',
+    category: 'Performance',
+    tags: ['srcset', 'lazy loading', 'Core Web Vitals'],
+  },
+  {
+    path: '/testing',
+    navLabel: 'Testing',
+    title: 'Testing strategy',
+    detail: 'Vitest, Testing Library, MSW, and the testing trophy for React apps.',
+    summary:
+      'Follow the testing trophy: mostly integration tests, some unit tests for pure logic, few E2E tests for critical paths, and static analysis always on.',
+    category: 'Delivery',
+    tags: ['vitest', 'testing-library', 'msw'],
+  },
 ]
 
 export const overviewTopic = labTopics[0]
