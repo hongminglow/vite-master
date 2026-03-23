@@ -1,40 +1,45 @@
-import { Bell, Layers, MessageSquare, Sparkles } from 'lucide-react'
+import { Layers, MessageSquare, Sparkles } from "lucide-react";
 
-import { SectionShell } from '@/components/layout/SectionShell'
-import { Badge } from '@/components/ui/Badge'
-import { Button } from '@/components/ui/Button'
-import { Panel } from '@/components/ui/Panel'
+import { SectionShell } from "@/components/layout/SectionShell";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Panel } from "@/components/ui/Panel";
 import {
   ToastProvider,
   useToast,
-} from '@/features/notifications-lab/context/ToastContext'
-import { ToastContainer } from '@/features/notifications-lab/components/ToastContainer'
+} from "@/features/notifications-lab/context/ToastContext";
+import { ToastContainer } from "@/features/notifications-lab/components/ToastContainer";
 
 const designConcerns = [
   {
-    title: 'Portal rendering',
-    detail: 'Toasts render via createPortal to escape parent overflow and z-index stacking. This prevents clipping by modals or scrollable containers.',
+    title: "Portal rendering",
+    detail:
+      "Toasts render via createPortal to escape parent overflow and z-index stacking. This prevents clipping by modals or scrollable containers.",
   },
   {
-    title: 'Accessibility',
-    detail: 'The container uses role="status" and aria-live="polite" so screen readers announce new toasts without interrupting the user.',
+    title: "Accessibility",
+    detail:
+      'The container uses role="status" and aria-live="polite" so screen readers announce new toasts without interrupting the user.',
   },
   {
-    title: 'Auto-dismiss timing',
-    detail: 'Each toast self-dismisses after a configurable delay (default 4s). Zero duration keeps it persistent until the user dismisses it.',
+    title: "Auto-dismiss timing",
+    detail:
+      "Each toast self-dismisses after a configurable delay (default 4s). Zero duration keeps it persistent until the user dismisses it.",
   },
   {
-    title: 'Queue limit',
-    detail: 'Cap the visible toast count (5 in this demo) to prevent screen overflow. Oldest toasts are removed when the limit is reached.',
+    title: "Queue limit",
+    detail:
+      "Cap the visible toast count (5 in this demo) to prevent screen overflow. Oldest toasts are removed when the limit is reached.",
   },
   {
-    title: 'Action support',
-    detail: 'Toasts can include an action button (e.g., "Undo") that runs a callback and auto-dismisses the toast.',
+    title: "Action support",
+    detail:
+      'Toasts can include an action button (e.g., "Undo") that runs a callback and auto-dismisses the toast.',
   },
-] as const
+] as const;
 
 function NotificationsContent() {
-  const { addToast, clearAll, toasts } = useToast()
+  const { addToast, clearAll, toasts } = useToast();
 
   return (
     <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
@@ -47,8 +52,9 @@ function NotificationsContent() {
                 Toast playground
               </h3>
               <p className="max-w-2xl text-sm leading-6 text-slate-600">
-                Trigger different toast types and watch them stack, auto-dismiss, and
-                support actions. All rendered via a portal outside the main DOM tree.
+                Trigger different toast types and watch them stack,
+                auto-dismiss, and support actions. All rendered via a portal
+                outside the main DOM tree.
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -61,8 +67,8 @@ function NotificationsContent() {
             <Button
               onClick={() =>
                 addToast({
-                  type: 'success',
-                  message: 'Changes saved successfully.',
+                  type: "success",
+                  message: "Changes saved successfully.",
                 })
               }
             >
@@ -71,8 +77,8 @@ function NotificationsContent() {
             <Button
               onClick={() =>
                 addToast({
-                  type: 'error',
-                  message: 'Failed to update the record. Please try again.',
+                  type: "error",
+                  message: "Failed to update the record. Please try again.",
                 })
               }
               variant="secondary"
@@ -82,8 +88,8 @@ function NotificationsContent() {
             <Button
               onClick={() =>
                 addToast({
-                  type: 'warning',
-                  message: 'Your session expires in 5 minutes.',
+                  type: "warning",
+                  message: "Your session expires in 5 minutes.",
                 })
               }
               variant="secondary"
@@ -93,8 +99,8 @@ function NotificationsContent() {
             <Button
               onClick={() =>
                 addToast({
-                  type: 'info',
-                  message: 'A new version is available.',
+                  type: "info",
+                  message: "A new version is available.",
                 })
               }
               variant="secondary"
@@ -107,12 +113,12 @@ function NotificationsContent() {
             <Button
               onClick={() =>
                 addToast({
-                  type: 'success',
-                  message: 'Item deleted.',
+                  type: "success",
+                  message: "Item deleted.",
                   action: {
-                    label: 'Undo',
+                    label: "Undo",
                     onClick: () => {
-                      addToast({ type: 'info', message: 'Deletion undone.' })
+                      addToast({ type: "info", message: "Deletion undone." });
                     },
                   },
                 })
@@ -124,8 +130,8 @@ function NotificationsContent() {
             <Button
               onClick={() =>
                 addToast({
-                  type: 'warning',
-                  message: 'This toast will stay until dismissed.',
+                  type: "warning",
+                  message: "This toast will stay until dismissed.",
                   duration: 0,
                 })
               }
@@ -143,7 +149,9 @@ function NotificationsContent() {
           </div>
 
           <div className="mt-5">
-            <Badge variant="neutral">{toasts.length} active toast{toasts.length !== 1 ? 's' : ''}</Badge>
+            <Badge variant="neutral">
+              {toasts.length} active toast{toasts.length !== 1 ? "s" : ""}
+            </Badge>
           </div>
         </Panel>
 
@@ -155,10 +163,22 @@ function NotificationsContent() {
             </h3>
           </div>
           <ol className="mt-4 space-y-3 text-sm leading-6 text-slate-600">
-            <li><strong>1.</strong> ToastProvider wraps the app and manages the toast queue in state.</li>
-            <li><strong>2.</strong> useToast() gives any component access to addToast and removeToast.</li>
-            <li><strong>3.</strong> ToastContainer renders via createPortal at the document body level.</li>
-            <li><strong>4.</strong> Each toast self-removes after its duration via setTimeout with cleanup.</li>
+            <li>
+              <strong>1.</strong> ToastProvider wraps the app and manages the
+              toast queue in state.
+            </li>
+            <li>
+              <strong>2.</strong> useToast() gives any component access to
+              addToast and removeToast.
+            </li>
+            <li>
+              <strong>3.</strong> ToastContainer renders via createPortal at the
+              document body level.
+            </li>
+            <li>
+              <strong>4.</strong> Each toast self-removes after its duration via
+              setTimeout with cleanup.
+            </li>
           </ol>
         </Panel>
       </div>
@@ -177,8 +197,12 @@ function NotificationsContent() {
                 className="rounded-[24px] border border-slate-200/80 bg-white px-4 py-4"
                 key={item.title}
               >
-                <p className="text-sm font-semibold text-slate-900">{item.title}</p>
-                <p className="mt-2 text-sm leading-6 text-slate-600">{item.detail}</p>
+                <p className="text-sm font-semibold text-slate-900">
+                  {item.title}
+                </p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  {item.detail}
+                </p>
               </div>
             ))}
           </div>
@@ -192,18 +216,27 @@ function NotificationsContent() {
             </h3>
           </div>
           <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-600">
-            <li><strong>sonner</strong> — beautiful defaults, small bundle, Tailwind-friendly.</li>
-            <li><strong>react-hot-toast</strong> — minimal API, lightweight, easy to customize.</li>
-            <li><strong>radix-ui/toast</strong> — headless, fully accessible, composable.</li>
+            <li>
+              <strong>sonner</strong> — beautiful defaults, small bundle,
+              Tailwind-friendly.
+            </li>
+            <li>
+              <strong>react-hot-toast</strong> — minimal API, lightweight, easy
+              to customize.
+            </li>
+            <li>
+              <strong>radix-ui/toast</strong> — headless, fully accessible,
+              composable.
+            </li>
           </ul>
           <p className="mt-3 text-sm leading-6 text-slate-600">
-            Building your own first helps you understand the portal, timing, and accessibility
-            concerns before adopting a library.
+            Building your own first helps you understand the portal, timing, and
+            accessibility concerns before adopting a library.
           </p>
         </Panel>
       </div>
     </div>
-  )
+  );
 }
 
 export function NotificationsLab() {
@@ -219,5 +252,5 @@ export function NotificationsLab() {
       </SectionShell>
       <ToastContainer />
     </ToastProvider>
-  )
+  );
 }

@@ -1,78 +1,71 @@
 import { useState } from 'react'
 
 import { Button } from '@/components/ui/Button'
-import { Dialog } from '@/features/dialogs-lab/components/Dialog'
+import { useDialog } from '@/features/dialogs-lab/context/DialogContext'
 
 export function ConfirmDialog() {
-  const [open, setOpen] = useState(false)
   const [result, setResult] = useState<string | null>(null)
+  const { openDialog } = useDialog()
 
   const handleConfirm = () => {
     setResult('Confirmed — the destructive action would execute here.')
-    setOpen(false)
   }
 
-  return (
-    <div className="space-y-3">
-      <Button onClick={() => setOpen(true)} variant="secondary">
-        Open confirmation dialog
-      </Button>
-
-      {result && (
-        <p className="text-sm text-emerald-600">{result}</p>
-      )}
-
-      <Dialog
-        description="This action cannot be undone. The item will be permanently removed from the system."
-        onClose={() => setOpen(false)}
-        open={open}
-        title="Delete this item?"
-      >
+  const handleOpen = () => {
+    openDialog({
+      description:
+        'This action cannot be undone. The item will be permanently removed from the system.',
+      title: 'Delete this item?',
+      content: (onClose) => (
         <div className="flex justify-end gap-3">
-          <Button onClick={() => setOpen(false)} variant="ghost">
+          <Button onClick={onClose} variant="ghost">
             Cancel
           </Button>
           <Button
             className="bg-rose-500 text-white shadow-rose-500/30 hover:bg-rose-400"
-            onClick={handleConfirm}
+            onClick={() => {
+              handleConfirm()
+              onClose()
+            }}
           >
             Yes, delete
           </Button>
         </div>
-      </Dialog>
+      ),
+    })
+  }
+
+  return (
+    <div className="space-y-3">
+      <Button onClick={handleOpen} variant="secondary">
+        Open confirmation dialog
+      </Button>
+
+      {result && <p className="text-sm text-emerald-600">{result}</p>}
     </div>
   )
 }
 
 export function FormDialog() {
-  const [open, setOpen] = useState(false)
   const [submitted, setSubmitted] = useState<string | null>(null)
+  const { openDialog } = useDialog()
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const data = new FormData(e.currentTarget)
-    const name = data.get('name') as string
-    setSubmitted(`Submitted: ${name}`)
-    setOpen(false)
-  }
-
-  return (
-    <div className="space-y-3">
-      <Button onClick={() => setOpen(true)} variant="secondary">
-        Open form dialog
-      </Button>
-
-      {submitted && (
-        <p className="text-sm text-emerald-600">{submitted}</p>
-      )}
-
-      <Dialog
-        description="Fill in the details below and submit. Tab focus is trapped inside the dialog."
-        onClose={() => setOpen(false)}
-        open={open}
-        title="Create a new item"
-      >
-        <form className="space-y-4" onSubmit={handleSubmit}>
+  const handleOpen = () => {
+    openDialog({
+      description:
+        'Fill in the details below and submit. Tab focus is trapped inside the dialog.',
+      title: 'Create a new item',
+      content: (onClose) => (
+        <form
+          className="space-y-4"
+          onSubmit={(e) => {
+            e.preventDefault()
+            const data = new FormData(e.currentTarget)
+            const name = data.get('name') as string
+            setSubmitted(`Submitted: ${name}`)
+            onClose()
+          }}
+        >
           <label className="block">
             <span className="text-sm font-medium text-slate-700">Item name</span>
             <input
@@ -85,13 +78,23 @@ export function FormDialog() {
             />
           </label>
           <div className="flex justify-end gap-3">
-            <Button onClick={() => setOpen(false)} type="button" variant="ghost">
+            <Button onClick={onClose} type="button" variant="ghost">
               Cancel
             </Button>
             <Button type="submit">Create</Button>
           </div>
         </form>
-      </Dialog>
+      ),
+    })
+  }
+
+  return (
+    <div className="space-y-3">
+      <Button onClick={handleOpen} variant="secondary">
+        Open form dialog
+      </Button>
+
+      {submitted && <p className="text-sm text-emerald-600">{submitted}</p>}
     </div>
   )
 }

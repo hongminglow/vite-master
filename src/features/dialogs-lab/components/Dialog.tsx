@@ -62,7 +62,7 @@ export function Dialog({
       aria-describedby={description ? 'dialog-description' : undefined}
       aria-labelledby="dialog-title"
       className={cn(
-        'max-w-lg w-full rounded-[28px] border border-slate-200/80 bg-white p-0 shadow-2xl shadow-black/12 backdrop:bg-black/50 backdrop:backdrop-blur-sm',
+        'fixed inset-0 m-auto max-w-lg w-full rounded-[28px] border border-slate-200/80 bg-white p-0 shadow-2xl shadow-black/12 backdrop:bg-black/50 backdrop:backdrop-blur-sm',
         'open:animate-in open:fade-in open:zoom-in-95 open:duration-200',
         className,
       )}
