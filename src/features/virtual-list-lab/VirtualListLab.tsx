@@ -55,6 +55,7 @@ export function VirtualListLab() {
     getScrollElement: () => parentRef.current,
     estimateSize: () => 144,
     overscan: 8,
+    gap: 16,
   })
 
   const virtualRows = rowVirtualizer.getVirtualItems()
@@ -150,7 +151,7 @@ export function VirtualListLab() {
             </div>
 
             <div
-              className="lab-scroll mt-6 h-[38rem] rounded-[28px] border border-slate-800/90 bg-slate-950/70 p-2"
+              className="lab-scroll mt-6 h-[38rem] overflow-y-auto rounded-[28px] border border-slate-800/90 bg-slate-950/70 p-2"
               ref={parentRef}
             >
               <div
@@ -167,11 +168,12 @@ export function VirtualListLab() {
                   return (
                     <div
                       className="absolute left-0 top-0 w-full px-2"
+                      data-index={virtualRow.index}
                       key={task.id}
                       ref={rowVirtualizer.measureElement}
                       style={{ transform: `translateY(${virtualRow.start}px)` }}
                     >
-                      <div className="rounded-[24px] border border-slate-800/90 bg-slate-900/82 px-4 py-4">
+                      <div className="rounded-[24px] border border-slate-800/90 bg-slate-900 px-4 py-4">
                         <div className="flex flex-wrap items-start justify-between gap-3">
                           <div>
                             <div className="flex flex-wrap items-center gap-2">
