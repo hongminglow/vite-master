@@ -11,3 +11,11 @@ createRoot(document.getElementById('root')!).render(
     </AppProviders>
   </StrictMode>,
 )
+
+// ── Hide splash screen after React mounts ──────────────────────────
+const splash = document.getElementById('splash')
+if (splash) {
+  splash.classList.add('hide')
+  splash.addEventListener('transitionend', () => splash.remove(), { once: true })
+}
+
